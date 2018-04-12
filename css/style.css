@@ -8,13 +8,13 @@
 }
 main {
   margin: auto;
-  /* width: 730px; */
+  width: calc(600px + (0.3em*18));
 }
 .board-game {
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  width: calc(700px + (0.3em*14));
+  width: calc(600px + (0.3em*18));
   /* height: 400px; */
   padding: 0.5em;
   margin: 1em;
@@ -26,16 +26,16 @@ main {
   height: 100px;
   margin: 0.3em;
 }
-.card:hover{
-  background-color: grey;
-}
 .cache {
-  display: none;
   width: 100px;
   height: 100px;
   background-color: #AAAAAA;
 }
+.cache:hover {
+  background-color: grey;
+}
 .image {
+  display: none;
   width: 100px;
   height: 100px;
   background-color: white;

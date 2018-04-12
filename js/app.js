@@ -12,8 +12,8 @@ var app = {
     //appelle de la méthode d'ajout des cards au board
     app.addCardsToboard();
 
-    //appelle de la fonction au clic;
-    //$('.card').on('click', app.returnCard);
+    //appelle de la fonction de retournement au clic;
+    $('.card').on('click', app.returnCard);
 
   }, // *********************fin init
 
@@ -21,7 +21,7 @@ var app = {
     cardsGenerators: function(){
       var $i = 0;
       //on boucle autant de fois que de carte à créer
-      while ($i < 28) {
+      while ($i < 36) {
         $i++;
         //création de 28 div
         var $cardDiv = $('<div>');
@@ -65,32 +65,6 @@ var app = {
 
     },//**fin cardsGenerators*****************
 
-    SaveCardsGenerators: function(){
-      // appelle de création de 28 div ou 28 cards
-      var $i = 0;
-      //on définit la position du background
-      var $positionX = 100;
-      var $positionY = 100;
-      while ($i < 28) {
-        $i++;
-        //on incrémente la position du background
-        $positionY += 100;
-        //création des 28 div cache
-        var $cardDiv = $('<div>');
-        $cardDiv.addClass('card');
-        $cardDiv.addClass('cache');
-        $cardDiv.data('nbr', $i); //on affecte un data nbr pour le retrouver au clic
-        $cardDiv.css({
-          backgroundImage: 'url(../images/cards.png)',
-          backgroundPosition: ' '+$positionX+'px '+$positionY+'px '  ,
-        });
-        //On range les div dans la property app.card
-        app.cards[$i] = $cardDiv;
-      }
-      console.log(app.cards);
-
-
-},//**fin cardsGenerators
 
     //méthode d'ajout des div aux board *************
     addCardsToboard:function(){
@@ -105,9 +79,9 @@ var app = {
       //var $selectedCard = $('.card').data('nbr');
 
       //on retir à cette card la class .cache et remple par la classe .image
-      $(this).removeClass('cache');
-      $(this).addClass('image');
-      // console.log($(this));
+      $(this).children().hide('cache');
+      $(this).children().next().show('image');
+      console.log($(this));
       // console.log($clickedCard);
       // console.log($selectedCard);
     }, // returnCard
