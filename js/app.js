@@ -5,23 +5,24 @@ var app = {
   openedCard: [],
   clickedCard1: null,
   clickedDiv1: null,
-  clickedCard2: "",
-  clickedDiv2: "",
+  clickedCard2: null,
+  clickedDiv2: null,
 
   init: function(){
     //console.log('init');
+    console.log(app.cards);
 
     //appelle de la méthode de génération des cards
     app.cardsGenerators();
 
     //on méange les cartes
-    app.shuffleCards(app.cards);
+    //app.shuffleCards(app.cards);
 
     //appelle de la méthode d'ajout des cards au board
     app.addCardsToboard();
 
     //appelle de la fonction de retournement au clic;
-    $('.card').on('click', app.returnCard);
+    $('.card').on('click', app.returnCard2);
 
   }, // *********************fin init
 
@@ -37,13 +38,16 @@ var app = {
       //console.log(app.cardsName[index]);
       var $cardName = cardsName.name[index];
     }
-
-    while ($i < 36) {
+    // 36 ou 28
+    while ($i < 28) {
 
       //création des x div .card
       var $cardDiv = $('<div>');
       $cardDiv.addClass('card');
-      $cardDiv.data('idCard', cardsName.name[$i]); //on affecte un data  au cas où
+      //$cardDiv.addClass(cardsName.name[$i])
+      //$cardDiv.id(cardsName.name[$i]); // on affecte un id
+      $cardDiv.data('idCard', cardsName.name[$i]); //on affecte un data
+
       //création des x div .cache
       var $cacheDiv = $('<div>');
       $cacheDiv.addClass('cache');
@@ -102,72 +106,138 @@ var app = {
     $('.board-game').append(app.cards);
   }, // addCardsToboard
 
-  returnCard: function(event){
-    // var $clickedCard1 = "";
-    // var $clickedDiv1;
-    // var $clickedCard2;
-    // var $clickedDiv2;
-    //console.log($(this));
+  returnCard2: function(event){
+    //si le 1er clic est vide
+    if (!app.clickedDiv1) {
+
+      app.clickedId1 = $(this).data('idCard').slice(0,-1);
+      //app.clickedId1 = $(this).attr('class').slice(0,-1);
+      app.clickedDiv1 = $(this);
+
+      $(this).children().hide('cache');
+      $(this).children().next().show('image');
+      console.log('clickedId1: '+app.clickedId1);
+
+    //} else if ($(this).data('idCard').slice(0,-1) !== app.clickedCard1.slice(0,-1)) {
+    } else
+      //$(this).val().slice(0,-1) !== app.clickedId1
+     if ($(this).data('idCard').slice(0,-1) !== app.clickedId1) {
+       //app.clickedId2 = $(this).attr('class');
+       app.clickedId2 = $(this).data('idCard').slice(0,-1);
+       app.clickedDiv2 = $(this);
+       console.log('clickedId2: '+app.clickedId2);
+
+      //on cache le cache et on montre l'image
+      $(this).children().hide('cache');
+      $(this).children().next().show('image');
+      //console.log('$clickedCard1: '+app.clickedCard1, app.clickedDiv1);
+      //console.log('$clickedCard2: '+app.clickedId2);
+
+      /****** if it's a match! or not... ******/
+      //$(this).attr('class').slice(0,-1) == app.clickedId1
+      if ($(this).data('idCard').slice(0,-1) == app.clickedId1){
+        //on cache le cache et on montre l'image
+        //app.clickedId2 = $(this).attr('class').slice(0,-1);
+        app.clickedId2 = $(this).data('idCard').slice(0,-1);
+        console.log('clickedId2: '+app.clickedId2);
+        app.clickedDiv2 = $(this);
+        $(this).children().hide('cache');
+        $(this).children().next().show('image');
+       console.log('YEAH!');
+     } else {
+      //animation de retour des caches cards
+        app.clickedDiv1.children(":first").delay( 1300 ).fadeIn(300, "linear" );
+        app.clickedDiv1.children(":nth-child(2)").fadeOut(800, "linear" );
+        app.clickedDiv2.children(":first").delay( 1500 ).fadeIn(300, "linear" );
+        app.clickedDiv2.children(":nth-child(2)").fadeOut(1000, "linear" );
+
+        //remise à 0 des valeurs clickedCard et clickedDiv
+         app.clickedCard1 = null;
+         app.clickedCard2 = null;
+         app.clickedDiv1 = null;
+         app.clickedDiv2 = null;
+
+      }//fin else gugu
+    } // fin if elseif gal
 
 
+
+
+
+  }, // fin function returnCard
+  returnCard1: function(event){
     //si le 1er clic est vide
     if (!app.clickedCard1) {
       //on prévient le clic et ajoute la class .selectedDiv à la carte selectionnée
-      $(this).css("pointerEvents", "none").addClass('selectedDiv');
+        //$(this).css("pointerEvents", "none").addClass('selectedDiv');
+        // $(this).addClass('selectedDiv1');
+        // $('.selectedDiv1').css("pointerEvents", "none");
+        //$(this).off('click');
+
       app.clickedDiv1 = $(this);
       //on stock la valeur de la carte (un fruit) dans la variable $$clickedCard1
-      app.clickedCard1 = $(this).data('idCard');
+      //app.clickedCard1 = $(this).data('idCard');
+      app.clickedCard1 = $(this).attr('id');
       //on cache le cache et on montre l'image
       $(this).children().hide('cache');
       $(this).children().next().show('image');
       //console.log('$clickedCard1: '+app.clickedCard1, app.clickedDiv1);
 
+      //off le clic sur cette carte sinon la paire n'est pas cliquable
+      //$(this).off("click");
+
+      console.log('$clickedCard1: '+app.clickedCard1, app.clickedDiv1);
       //si la second clic n'est pas égal à la valeur du 1er
-    } else if ($(this).data('idCard') !== app.clickedCard1) {
-      //console.log($(this).data('idCard'));
+    //} else if ($(this).data('idCard').slice(0,-1) !== app.clickedCard1.slice(0,-1)) {
+    } else
+     if ($(this).attr('id').slice(0,-1) !== app.clickedCard1.slice(0,-1)) {
+        //console.log($(this).data('idCard').slice(0,-1));
       //on prévient le clic et et ajoute la class .selectedDiv à la carte selectionnée
-      $(this).css("pointerEvents", "none").addClass('selectedDiv');
+      //$(this).css("pointerEvents", "none").addClass('selectedDiv2');
+        //$(this).addClass('selectedDiv2');
+        //$('.selectedDiv2').css("pointerEvents", "none");
       app.clickedDiv2 = $(this);
 
       //on stock la valeur du 2eme clic
-      app.clickedCard2 = $(this).data('idCard');
+      //app.clickedCard2 = $(this).data('idCard');
+      app.clickedCard2 = $(this).attr('id');
+
       //on cache le cache et on montre l'image
       $(this).children().hide('cache');
       $(this).children().next().show('image');
-      //console.log('$clickedCard2: '+app.clickedCard2, app.clickedDiv2);
+      //console.log('$clickedCard1: '+app.clickedCard1, app.clickedDiv1);
+      console.log('$clickedCard2: '+app.clickedCard2, app.clickedDiv2);
 
       /****** if it's a match! or not... ******/
-      if (app.clickedCard1 == app.clickedCard2){
-        consolg.log('YEAH!')
-      } else {
+      if (app.clickedCard1.slice(0,-1) == app.clickedCard2.slice(0,-1)){
+       console.log('YEAH!');
+     } else { //else gugu
 
-        //annulation des prevent click
-        app.clickedDiv1.css('pointerEvents','');
-        app.clickedDiv2.css('pointerEvents','');
+        //annulation des prevent click*********************
+        // app.clickedDiv1.css('pointerEvents','');
+        // app.clickedDiv2.css('pointerEvents','');
+        //$('.selectedDiv2').css('pointerEvents','');
 
         //animation de retour des caches cards
-        app.clickedDiv1.children(":first").delay( 1700 ).fadeIn(700, "linear" );
-        app.clickedDiv1.children(":nth-child(2)").fadeOut(1600, "linear" );
-        app.clickedDiv2.children(":first").delay( 1700 ).fadeIn(700, "linear" );
-        app.clickedDiv2.children(":nth-child(2)").fadeOut(1600, "linear" );
+        app.clickedDiv1.children(":first").delay( 1300 ).fadeIn(300, "linear" );
+        app.clickedDiv1.children(":nth-child(2)").fadeOut(800, "linear" );
+        app.clickedDiv2.children(":first").delay( 1500 ).fadeIn(300, "linear" );
+        app.clickedDiv2.children(":nth-child(2)").fadeOut(1000, "linear" );
 
-        //suppression des valeurs clickedCard et clickedDiv
-        app.clickedCard1 = null;
-        app.clickedCard2 = null;
-        app.clickedDiv1 = null;
-        app.clickedDiv2 = null;
+        //remise à 0 des valeurs clickedCard et clickedDiv
+         app.clickedCard1 = null;
+         app.clickedCard2 = null;
+         app.clickedDiv1 = null;
+         app.clickedDiv2 = null;
 
-      }
-
-
-
-    } // fin if elseif
+      }//fin else gugu
+    } // fin if elseif gal
 
 
 
 
 
-  }, // fin returnCard
+  }, // fin function returnCard
 
   returnCardOld: function(event){
     //on récupère le data de la carte cliquée et identifiée
