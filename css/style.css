@@ -1,29 +1,37 @@
 .game-title {
   width: 100%;
   padding: 2rem;
-  background-color: #EEEEEE;
-  color: black;
+  background-color: black;
+  color: white;
   text-align: center;
   font-size: 2rem;
+  text-transform: uppercase;
+  font-family: 'arial',sans-serif;
+}
+body {
+  background-color: #151111;
 }
 main {
   margin: auto;
   width: calc(600px + (0.3em*18));
 }
 .nav-buttons {
-  text-align: center;
   display: flex;
+  justify-content: center;
+}
+.button {
+  margin-right: 0.5em;
 }
 
 .board-game {
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  width: calc(600px + (0.3em*18));
+  width: calc(600px + (0.3em*16));
   /* height: 400px; */
   padding: 0.5em;
   margin: 1em;
-  background-color: #DDDCFF;
+  background-color: white;
 }
 .card {
   box-sizing: border-box;
@@ -34,7 +42,9 @@ main {
 .cache {
   width: 100px;
   height: 100px;
-  background-color: #AAAAAA;
+  background-color: #0ac3a7;
+  background-image: url(../images/ologo.jpg);
+  background-size: cover;
 }
 .cache:hover {
   background-color: grey;
@@ -50,6 +60,6 @@ main {
     height:30px;
     margin: auto;
     margin-top: 15px;
-    background-color: grey;
+    background-color: #01c3a8;
     color: red;
 }

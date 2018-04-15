@@ -12,65 +12,63 @@ var app = {
   init: function(){
     //console.log('init');
 
-
     //on appelle la création du menu
     app.menuGen();
-
-    //création des cartes à jouer
-    app.cardsGenerators();
-
-
-    //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
-    //pour lancer le jeu avec un minimun de carte
-    app.addCardsToBoard2(app.cardsOnBoard);
-
-    //on méange les cartes
-    //app.shuffleCards(app.cards);
-
-    //appelle de la fonction de RETOURNEMENT au clic;
-    $('.card').on('click', app.game);
 
     //ecoute les boutons de choix du nbre de cartes et on affecte cette nelle valeurs
     //à app.cardsOnBoard
     $('.button').on('click', function (){
       app.cardsOnBoard = $(this).val();
-      app.addCardsToBoard2($(this).val());
+      app.addCardsToBoard($(this).val());
     });
+
+    //création des cartes à jouer
+    app.cardsGenerators();
+
+    //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
+    //pour lancer le jeu avec un minimun de carte
+    app.addCardsToBoard(app.cardsOnBoard);
+
+    //appelle de la fonction de RETOURNEMENT au clic;
+    $('.card').on('click', app.game);
 
     //appelle de la fonction RESET;
     $('.reset').on('click', app.resetBoard);
-
 
 
   }, // *******************************************************fin init
 
   /************** GENERATORS ***********************************/
 
-  //progressBar
-  progressTimer: function(on) {
-    let $started = on;
-    console.log($started);
+  // ProgressBar
+  progressTimer: function() {
 
+    // si app.startTimer est null c'est qu'il n'a pas été déjà lancer. On peut le lancer
     if (app.startTimer == null) {
+      // valeur en second
       let $a = 60;
-      //a rebours
+      // valeur de la barre de progression
       let $s = 100;
       let $oneSecond = setInterval(step, 1000);
       function step() {
         if ($a === 0) {
+          // si le compteur arrive à zero
           clearInterval($oneSecond);
           alert('LOOOOSER!');
           app.resetBoard();
         } else {
+          // pour faire correspondre la barre de % (s) et le temps en s(a), la barre % descend plus vite
           $s-=1.66;
           $a-=1;
-           $('.progress-bar').css("width", " "+$s+"% ");
-           $('.progress-bar').attr("aria-valuenow", " "+$a+" ");
-           $('.progress-bar').text($a+'s');
-           console.log($a);
+          // on update toutes le second le style html de la barre
+          $('.progress-bar').css("width", " "+$s+"% ");
+          $('.progress-bar').attr("aria-valuenow", " "+$a+" ");
+          $('.progress-bar').text($a+'s');
+          if ($a === 30) {$('.progress-bar').text(' HURRY UP!');}
         }
       } //step
     } // if
+    //on affecte un valeur pour ne pas relancer le timer après un 1er clic
     return app.startTimer = 'on';
   },// progressTime
 
@@ -82,15 +80,16 @@ var app = {
     //div nav
     var $navButtons = $('<div>');
     $navButtons.addClass('nav-buttons');
-    $('main').append($navButtons);
+    $('main').after($navButtons);
 
     //boutton 9 cartes
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
     $button.addClass('button');
+    $button.addClass('btn btn-warning');
     $button.addClass('6');
-    $button.text('6 cartes');
+    $button.text('12 cartes');
     $button.val('6');
     $('.nav-buttons').append($buttonDiv);
 
@@ -99,20 +98,22 @@ var app = {
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
+    $button.addClass('btn btn-warning');
     $button.addClass('button');
-    $button.addClass('12');
-    $button.text('12 cartes');
-    $button.val('12');
+    $button.addClass('14');
+    $button.text('28 cartes');
+    $button.val('14');
     $('.nav-buttons').append($buttonDiv);
 
-    //boutton 38
+    //boutton 36
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
+    $button.addClass('btn btn-warning');
     $button.addClass('button');
-    $button.addClass('24');
-    $button.text('24 cartes');
-    $button.val('24');
+    $button.addClass('18');
+    $button.text('36 cartes');
+    $button.val('18');
     $('.nav-buttons').append($buttonDiv);
 
     //reset
@@ -120,6 +121,7 @@ var app = {
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
+    $button.addClass('btn btn-danger');
     $button.addClass('button');
     $button.addClass('reset');
     $button.text('reset');
@@ -127,7 +129,7 @@ var app = {
     $('.nav-buttons').append($buttonDiv);
   },
 
-  // méthode pour générer les cards ***************
+  // Génération des cartes
   cardsGenerators: function(){
     // appelle de création des x div
     var $i = 0;
@@ -138,16 +140,16 @@ var app = {
     // boucle de création de toutes les cartes
     while ($i < 36) {
 
-      //création des x div .card
+      //création des div .card
       var $cardDiv = $('<div>');
       $cardDiv.addClass('card');
       //$cardDiv.addClass(cardsName.name1[$i]);
       $cardDiv.data('idCard', cardsName.name[$i]); //on affecte un data caché
 
-      //création des x div .cache
+      //création des div .cache
       var $cacheDiv = $('<div>');
       $cacheDiv.addClass('cache');
-      //création des x div .image
+      //création des div .image
       var $imageDiv = $('<div>');
       $imageDiv.addClass('image');
       $imageDiv.css({
@@ -166,25 +168,16 @@ var app = {
       //On range les div dans la property tableau app.card
       app.cards.push($cardDiv);
     }
-      //console.log(app.cards);
   },//**fin cardsGenerators
 
-  //mélange des cartes positions
-  shuffleCards: function(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  },//fin shuffle
-
-  //méthode d'ajout des div au plateau selon le nbre voulu selectionné *************
-  addCardsToBoard2:function(cardsNbr){
+  // Ajout des div au plateau selon le nbre voulu selectionné
+  addCardsToBoard:function(cardsNbr){
     //remise à zéro du nombre de card sur le plateau
-    //  $( "div" ).remove( ".cache" );
-    //  $( "div" ).remove( ".image" );
-    //  $( "div" ).remove( ".card" );
-    //  $( ".board-game" ).empty();
+     // $( "div" ).remove( ".cache" );
+     // $( "div" ).remove( ".image" );
+     // $( "div" ).remove( ".card" );
+     //$( "div" ).css( "" );
+    $( ".board-game" ).empty();
     //  $('.card').unbind();
     //  app.cards = [];
     // app.cardsGenerators();
@@ -199,29 +192,40 @@ var app = {
     //  app.clickedDiv1 = null;
     //  app.clickedDiv2 = null;
 
+    /******************/
+    // 6 = 12 cartes //
+    // 14 = 28 cartes//
+    // 18 = 36 cartes//
+    /****************/
+    // on récupre le nbre de carte demandé
     let $howManyCards = cardsNbr;
     let i = 0;
+    // on créer 2 tableau pour accueilir le nom des cartes
     var $cardTab1 = [];
     var $cardTab2 = [];
-    //selection des data-id dans 2 tableaux avec un décalage pour avoir  deux fois les memes id
+    // selection des data-id dans 2 tableaux avec un décalage de 18 pour avoir deux fois les memes id
     for (i; i < $howManyCards; i++) {
        $cardTab1[i] = app.cards[i];
        $cardTab2[i] = app.cards[(i+18)];
     }
-
+    //on mélange les positions des cartes dans les 2 tableaux
     app.shuffleCards($cardTab1);
     app.shuffleCards($cardTab2);
 
     // on attache les deux tab de div au plateau
     $('.board-game').append($cardTab1);
     $('.board-game').append($cardTab2);
-
     //app.game();
   }, // addCardsToboard
 
-  addCardsToBoard:function(){
-    $('.board-game').append(app.cards);
-  }, // addCardsToboard
+  // Mélange de la positions des cartes
+  shuffleCards: function(a) {
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  },//fin shuffle
 
   /************************ GAME LOGIC *************************/
   game: function(event){
@@ -266,18 +270,18 @@ var app = {
    //on cache le cache et on montre l'image
    app.clickedDiv2.children().hide('cache');
    app.clickedDiv2.children().next().show('image');
-   //console.log('$clickedCard1: '+app.clickedCard1, app.clickedDiv1);
-   //console.log('$clickedCard2: '+app.clickedId2);
+
    //on empeche le clic sur toutes les cards
    $('.card').css("pointerEvents", "none");
+
    //on permet à nouveau le clic après 1sec
    window.setTimeout(app.noClickOff, 1000);
-   //on retourne les image non correspondentes
-   app.clickedDiv1.children(":first").delay( 1400 ).fadeIn(150, "linear" );
-   app.clickedDiv1.children(":nth-child(2)").delay( 1000 ).fadeOut(400, "linear" );
 
-   app.clickedDiv2.children(":first").delay( 1400 ).fadeIn(110, "linear" );
-   app.clickedDiv2.children(":nth-child(2)").delay( 1000 ).fadeOut(300, "linear" );
+   //on retourne les image non correspondentes
+   app.clickedDiv1.children(":first").delay( 1100 ).fadeIn(140, "linear" );
+   app.clickedDiv1.children(":nth-child(2)").delay( 900 ).fadeOut(300, "linear" );
+   app.clickedDiv2.children(":first").delay( 1100 ).fadeIn(120, "linear" );
+   app.clickedDiv2.children(":nth-child(2)").delay( 900 ).fadeOut(250, "linear" );
 
    //remise à 0 des valeurs clickedCard et clickedDiv
     app.clickedCard1 = null;
@@ -295,17 +299,17 @@ var app = {
   //si deux cartes sont identiques
   matchedCard: function(){
 
+    // on récupère et affecte les valeurs du data et de la div cliqué
     app.clickedDiv2.children().hide('cache');
     app.clickedDiv2.children().next().show('image');
     app.clickedDiv1.addClass('checked');
     app.clickedDiv2.addClass('checked');
 
-    //check si il reste des cartes à découvrir
+    //check si il reste des cartes à découvrir, si aucune c'est gagné
     let $checked = Number($('.checked').length);
-    //console.log($checked);
 
     if ($checked === (app.cardsOnBoard*2)) {
-      alert('YOU ARE AWSOME. YOU WIN!');
+      alert('YOU ARE AWESOME. YOU WIN!');
       app.resetBoard();
     }
     console.log('YEAH!');
