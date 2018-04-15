@@ -10,6 +10,11 @@ main {
   margin: auto;
   width: calc(600px + (0.3em*18));
 }
+.nav-buttons {
+  text-align: center;
+  display: flex;
+}
+
 .board-game {
   margin: auto;
   display: flex;
@@ -39,4 +44,12 @@ main {
   width: 100px;
   height: 100px;
   background-color: white;
+}
+.progress {
+    width:560px;
+    height:30px;
+    margin: auto;
+    margin-top: 15px;
+    background-color: grey;
+    color: red;
 }
