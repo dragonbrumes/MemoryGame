@@ -66,3 +66,25 @@ main {
 #win-message {
   display: none;
 }
+.score-div {
+  margin-top: 1em;
+  width: 100%;
+  text-align: center;
+}
+.score-tab {
+  margin: auto;
+  border: 1px solid red;
+  text-transform: uppercase;
+  font-family: 'arial',sans-serif;
+  padding: 0.2em;
+}
+.score-tab th {
+  background-color: #E0A800;
+  border: 1px solid red;
+  padding: 0.2em;
+}
+.score-tab td {
+  background-color: white;
+  border: 1px solid red;
+  padding: 0.2em;
+}

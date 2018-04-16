@@ -7,22 +7,39 @@ var app = {
   clickedDiv1: null,
   clickedCard2: null,
   clickedDiv2: null,
+  // timer data
   startTimer: null,
   secondTimer: 60, //le temps du compte à rebours
+  //score
+  gamesWin: Number(localStorage.getItem('gameslocalWin')),
+  gamesLose: Number(localStorage.getItem('gameslocalLose')),
+  gameslocalWin: null,
+  gameslocalLose: null,
 
   init: function(){
     //console.log('init');
-    // if (app.cardsOnBoard == null) {
+    //app.gameslocalWin = localStorage.clear();
+    //app.gamesWin = localStorage.setItem(app.gamesSessionWin, 0);
+    if (app.gamesWin == null && app.gamesLose == null ) {
+      app.gameslocalWin = localStorage.setItem('gameslocalWin', Number(0));
+      app.gameslocalLose = localStorage.setItem('gameslocalLose', Number(0));
+    }
+    console.log('localWin: ' +localStorage.getItem('gameslocalWin'));
+    console.log('localLose: ' +localStorage.getItem('gameslocalLose'));
+    // if (app.gamesScored == null) {
     //   console.log('c\'est null');
-    //   var sessionData = sessionStorage.getItem(app.cardsOnBoard);
-    //   var sessionData = sessionStorage.setItem(app.cardsOnBoard, '6');
+    //   var sessionData = sessionStorage.getItem(app.gamesScored);
+    //   var sessionData = localStorage.setItem(app.gamesScored, '6');
     // } else {
-    //   var sessionData = sessionStorage.getItem(app.cardsOnBoard);
+    //   var sessionData = sessionStorage.getItem(app.gamesScored);
     //   console.log('sessionData '+sessionData);
     // };
 
     //on appelle la création du menu
     app.menuGen();
+
+    // tableau des scoreWin
+    app.scoreBoard();
 
     //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
     //pour lancer le jeu avec un minimun de carte (contient la fonction de création des cartes)
@@ -59,7 +76,7 @@ var app = {
     }
   }, // end of difficultyLevel
 
-  // ProgressBar
+  // ProgressBar and LOSE process
   progressTimer: function() {
 
     // si app.startTimer est null c'est qu'il n'a pas été déjà lancé. On peut le lancer
@@ -76,6 +93,10 @@ var app = {
       function step() {
         if ($a === 0) {
           // si le compteur arrive à zero
+          // stockage en local de la partie perdue
+          app.gamesLose = Number(localStorage.getItem('gameslocalLose'));
+          app.gamesLose += 1;
+          app.gamesLose = localStorage.setItem('gameslocalLose', Number(app.gamesLose));
           clearInterval($oneSecond);
           alert('LOOOOSER!');
           app.resetBoard();
@@ -197,8 +218,8 @@ var app = {
   // Ajout des div au plateau selon le nbre voulu selectionné
   addCardsToBoard:function(cardsNbr){
     // Get saved data from sessionStorage
-    var cNbr = sessionStorage.getItem(app.cardsOnBoard);
-    console.log('cNbr '+cNbr);
+    //var cNbr = sessionStorage.getItem(app.cardsOnBoard);
+    //console.log('cNbr '+cNbr);
     // mise ou remise à zéro du nombre de card sur le plateau
     //on vide toutes les div déjà crées
      $( ".board-game" ).empty();
@@ -224,9 +245,9 @@ var app = {
        $cardTab1[i] = app.cards[i];
        $cardTab2[i] = app.cards[(i+18)];
     }
-    //on mélange les positions des cartes dans les 2 tableaux
-    app.shuffleCards($cardTab1);
-    app.shuffleCards($cardTab2);
+    //on mélange les positions des cartes dans les 2 tableaux///////////////////////////////////////////////
+    //app.shuffleCards($cardTab1);
+    //app.shuffleCards($cardTab2);
 
     // on attache les deux tab de div au plateau
     $('.board-game').append($cardTab1);
@@ -309,7 +330,7 @@ var app = {
     $('.card').css("pointerEvents", "");
   },
 
-  //si deux cartes sont identiques
+  //si deux cartes sont identiques et WIN fonction
   matchedCard: function(){
 
     // on récupère et affecte les valeurs du data et de la div cliquée
@@ -336,6 +357,17 @@ var app = {
       //   }
       // })
 
+      // stockage en local de la partie gagnée
+        // récupération du local
+        let $addWin = Number(localStorage.getItem('gameslocalWin'));
+        //j'ajoute 1
+        $addWin +=1;
+        //je renvoi au local
+        app.gameslocalWin = Number(localStorage.setItem('gameslocalWin', $addWin));
+      //je set la valeur win
+        app.gamesWin = app.gameslocalWin;
+
+
       setTimeout(function() {
         alert('YOU ARE AWESOME. YOU WIN!');
         app.resetBoard();
@@ -360,6 +392,12 @@ var app = {
     location.reload();
   },
 
+//Score board
+scoreBoard: function (){
+  $('#scoreTotal').text(app.gamesWin + app.gamesLose);
+  $('#scoreWin').text(app.gamesWin);
+  $('#scoreLose').text(app.gamesLose);
+},
 
 };//**********fin app
 
