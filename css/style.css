@@ -1,3 +1,13 @@
+body {
+  background-color: #151111;
+    font-family: 'arial', sans-serif;
+}
+
+main {
+  margin: auto;
+  width: calc(600px + (0.3em*18));
+}
+
 .game-title {
   width: 100%;
   padding: 2rem;
@@ -6,19 +16,19 @@
   text-align: center;
   font-size: 2rem;
   text-transform: uppercase;
-  font-family: 'arial',sans-serif;
+  font-family: inherit;
 }
-body {
-  background-color: #151111;
+.game-title h3 {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-family: inherit;
 }
-main {
-  margin: auto;
-  width: calc(600px + (0.3em*18));
-}
+
 .nav-buttons {
   display: flex;
   justify-content: center;
 }
+
 .button {
   margin-right: 0.5em;
 }
@@ -33,12 +43,14 @@ main {
   margin: 1em;
   background-color: white;
 }
+
 .card {
   box-sizing: border-box;
   width: 100px;
   height: 100px;
   margin: 0.3em;
 }
+
 .cache {
   width: 100px;
   height: 100px;
@@ -46,43 +58,53 @@ main {
   background-image: url(../images/ologo.jpg);
   background-size: cover;
 }
+
 .cache:hover {
-  background-color: grey;
+  -webkit-box-shadow: 0px 0px 10px 3px rgba(1,195,168,0.72);
+  -moz-box-shadow: 0px 0px 10px 3px rgba(1,195,168,0.72);
+  box-shadow: 0px 0px 10px 3px rgba(1,195,168,0.72);
 }
+
 .image {
   display: none;
   width: 100px;
   height: 100px;
   background-color: white;
 }
+
 .progress {
-    width:560px;
-    height:30px;
-    margin: auto;
-    margin-top: 15px;
-    background-color: #01c3a8;
-    color: red;
+  width: 560px;
+  height: 30px;
+  margin: auto;
+  margin-top: 15px;
+  background-color: #01c3a8;
+  color: red;
 }
+
 #win-message {
   display: none;
 }
+
 .score-div {
   margin-top: 1em;
   width: 100%;
   text-align: center;
 }
+
 .score-tab {
   margin: auto;
   border: 1px solid red;
   text-transform: uppercase;
-  font-family: 'arial',sans-serif;
+  font-family: 'arial', sans-serif;
   padding: 0.2em;
 }
+
 .score-tab th {
   background-color: #E0A800;
   border: 1px solid red;
   padding: 0.2em;
 }
+
 .score-tab td {
   background-color: white;
   border: 1px solid red;

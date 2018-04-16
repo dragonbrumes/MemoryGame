@@ -127,7 +127,7 @@ var app = {
     $button.addClass('button');
     $button.addClass('btn btn-warning');
     $button.addClass('6');
-    $button.text('12 cartes');
+    $button.text('12 cards');
     $button.val('6');
     $('.nav-buttons').append($buttonDiv);
 
@@ -138,7 +138,7 @@ var app = {
     $button.addClass('btn btn-warning');
     $button.addClass('button');
     $button.addClass('9');
-    $button.text('18 cartes');
+    $button.text('18 cards');
     $button.val('9');
     $('.nav-buttons').append($buttonDiv);
 
@@ -149,7 +149,7 @@ var app = {
     $button.addClass('btn btn-warning');
     $button.addClass('button');
     $button.addClass('18');
-    $button.text('36 cartes');
+    $button.text('36 cards');
     $button.val('18');
     $('.nav-buttons').append($buttonDiv);
 
