@@ -11,26 +11,38 @@ var app = {
 
   init: function(){
     //console.log('init');
+    // if (app.cardsOnBoard == null) {
+    //   console.log('c\'est null');
+    //   var sessionData = sessionStorage.getItem(app.cardsOnBoard);
+    //   var sessionData = sessionStorage.setItem(app.cardsOnBoard, '6');
+    // } else {
+    //   var sessionData = sessionStorage.getItem(app.cardsOnBoard);
+    //   console.log('sessionData '+sessionData);
+    // };
 
     //on appelle la création du menu
     app.menuGen();
 
-    //ecoute les boutons de choix du nbre de cartes et on affecte cette nelle valeurs
-    //à app.cardsOnBoard
-    $('.button').on('click', function (){
-      app.cardsOnBoard = $(this).val();
-      app.addCardsToBoard($(this).val());
-    });
-
     //création des cartes à jouer
-    app.cardsGenerators();
+    //app.cardsGenerators();
 
     //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
     //pour lancer le jeu avec un minimun de carte
     app.addCardsToBoard(app.cardsOnBoard);
 
+    //ecoute les boutons de choix du nbre de cartes et on affecte cette nelle valeurs
+    //à app.cardsOnBoard
+    $('.button').on('click', function (){
+      // on met à jour le nbre de carte par défault
+      app.cardsOnBoard = $(this).val();
+      //on envoi à la fonction le nbre de carte qu'on veut attacher au plateau
+      app.addCardsToBoard($(this).val());
+    });
+
     //appelle de la fonction de RETOURNEMENT au clic;
-    $('.card').on('click', app.game);
+    //mais n'ecoute pas directement .card, sinon au changement de DOM pour le nbre de carte,
+    //le listener ne fonctionne plus. On écoute donc à partir de leurs parent, .board-game
+    $('.board-game').on('click', '.card', app.game);
 
     //appelle de la fonction RESET;
     $('.reset').on('click', app.resetBoard);
@@ -172,32 +184,24 @@ var app = {
 
   // Ajout des div au plateau selon le nbre voulu selectionné
   addCardsToBoard:function(cardsNbr){
-    //remise à zéro du nombre de card sur le plateau
-     // $( "div" ).remove( ".cache" );
-     // $( "div" ).remove( ".image" );
-     // $( "div" ).remove( ".card" );
-     //$( "div" ).css( "" );
-    $( ".board-game" ).empty();
-    //  $('.card').unbind();
-    //  app.cards = [];
-    // app.cardsGenerators();
-    //
-    // // $('.cache').remove();
-    // // $('.image').remove();
-    // // $('.card').remove();
-    //
-    // //remise à 0 des valeurs clickedCard et clickedDiv
-    //  app.clickedCard1 = null;
-    //  app.clickedCard2 = null;
-    //  app.clickedDiv1 = null;
-    //  app.clickedDiv2 = null;
+    // Get saved data from sessionStorage
+    var cNbr = sessionStorage.getItem(app.cardsOnBoard);
+    console.log('cNbr '+cNbr);
+    // mise ou remise à zéro du nombre de card sur le plateau
+    //on vide toutes les div déjà crées
+     $( ".board-game" ).empty();
+     // on vide le tableau déjà créer
+     app.cards = [];
+     //on génère les cates
+     app.cardsGenerators();
 
     /******************/
     // 6 = 12 cartes //
     // 14 = 28 cartes//
     // 18 = 36 cartes//
     /****************/
-    // on récupre le nbre de carte demandé
+    // on récupre le nbre de carte demandée
+    //let $howManyCards = sessionStorage.getItem(app.cardsOnBoard);
     let $howManyCards = cardsNbr;
     let i = 0;
     // on créer 2 tableau pour accueilir le nom des cartes
@@ -229,28 +233,25 @@ var app = {
 
   /************************ GAME LOGIC *************************/
   game: function(event){
-    //progressBar au 1er clic
-    var $on = 'start';
-    app.progressTimer($on);
+    // au 1er clic on lance la progressBar et lui dit en parametre
+    app.progressTimer('start');
 
     //si le 1er clic est vide
     if (!app.clickedDiv1) {
       //on range le nom de la div et la div cliquée dans une var
-      //app.clickedId1 = $(this).attr('class').slice(0,-1);
-      //app.clickedId1 = $(this).data('idCard').slice(0,-1);
       app.clickedId1 = $(this).data('idCard');
       app.clickedDiv1 = $(this);
       //on affiche la div image avec l'image
       app.clickedDiv1.children().hide('cache');
       app.clickedDiv1.children().next().show('image');
-      console.log(app.clickedId1);
+      //console.log('clickedId1: ' +app.clickedId1);
 
       //si au 2eme clic les id images ne correspondent pas
     } else if ($(this).data('idCard') !== app.clickedId1) {
        //app.clickedId2 = $(this).attr('class').slice(0,-1);
        app.clickedId2 = $(this).data('idCard');
        app.clickedDiv2 = $(this);
-       console.log('ko '+app.clickedId2);
+       //console.log('ko '+app.clickedId2);
        //on renvoi vers la méthode de non correspondance
        app.unmatchedCard();
 
@@ -258,9 +259,9 @@ var app = {
     } else if ($(this).data('idCard') === app.clickedId1){
       app.clickedId2 = $(this).data('idCard');
       app.clickedDiv2 = $(this);
-      console.log('ok '+app.clickedId2);
-        //on renvoi vers la méthode de correspondance
-        app.matchedCard();
+      //console.log('ok '+app.clickedId2);
+      //on renvoi vers la méthode de correspondance si 2 cartes sont identiques
+      app.matchedCard();
      }
   }, // fin function returnCard
 
@@ -304,20 +305,23 @@ var app = {
     app.clickedDiv2.children().next().show('image');
     app.clickedDiv1.addClass('checked');
     app.clickedDiv2.addClass('checked');
-
-    //check si il reste des cartes à découvrir, si aucune c'est gagné
+    //console.log(app.cardsOnBoard);
+    // on compte le nombre de carte à checked (trouvés).
     let $checked = Number($('.checked').length);
-
+    // si le nbre de carte checked est égal au nbre de carte sur le plateau, c'est gagné
     if ($checked === (app.cardsOnBoard*2)) {
+      app.clickedDiv2.children().hide('cache');
+      app.clickedDiv2.children().next().show('image');
       alert('YOU ARE AWESOME. YOU WIN!');
       app.resetBoard();
     }
-    console.log('YEAH!');
-
+    //console.log('YEAH!');
+    //on remet les valeurs à zéro
     app.clickedCard1 = null;
     app.clickedCard2 = null;
     app.clickedDiv1 = null;
     app.clickedDiv2 = null;
+
   },//fin matched cards
 
   // reset
@@ -329,11 +333,6 @@ var app = {
     //$( ".board-game" ).empty();
     location.reload();
   },
-
-  progressBar: function(){
-
-  },
-
 
 
 };//**********fin app
