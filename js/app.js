@@ -17,23 +17,7 @@ var app = {
   gameslocalLose: null,
 
   init: function(){
-    //console.log('init');
-    //app.gameslocalWin = localStorage.clear();
-    //app.gamesWin = localStorage.setItem(app.gamesSessionWin, 0);
-    if (app.gamesWin == null && app.gamesLose == null ) {
-      app.gameslocalWin = localStorage.setItem('gameslocalWin', Number(0));
-      app.gameslocalLose = localStorage.setItem('gameslocalLose', Number(0));
-    }
-    console.log('localWin: ' +localStorage.getItem('gameslocalWin'));
-    console.log('localLose: ' +localStorage.getItem('gameslocalLose'));
-    // if (app.gamesScored == null) {
-    //   console.log('c\'est null');
-    //   var sessionData = sessionStorage.getItem(app.gamesScored);
-    //   var sessionData = localStorage.setItem(app.gamesScored, '6');
-    // } else {
-    //   var sessionData = sessionStorage.getItem(app.gamesScored);
-    //   console.log('sessionData '+sessionData);
-    // };
+    console.log('init');
 
     //on appelle la création du menu
     app.menuGen();
@@ -76,6 +60,14 @@ var app = {
     }
   }, // end of difficultyLevel
 
+  //Score board
+  scoreBoard: function (){
+    //on affiche les scores dans les td respectives. Issues du localStorage.
+    $('#scoreTotal').text(app.gamesWin + app.gamesLose);
+    $('#scoreWin').text(app.gamesWin);
+    $('#scoreLose').text(app.gamesLose);
+  },
+
   // ProgressBar and LOSE process
   progressTimer: function() {
 
@@ -88,7 +80,7 @@ var app = {
       // La barre de width:%($s) décrémente plus vite que la barre de temps $a (attr aria)
       // il faut faire correspondre la vitesse de décrémentation avec ($s/$a)
       let $d = (100/$a);
-
+      // on lance le compteur
       let $oneSecond = setInterval(step, 1000);
       function step() {
         if ($a === 0) {
@@ -119,15 +111,13 @@ var app = {
 
   // création du menu
   menuGen: function(){
-    //36 18 9
-    //24 12 6
 
     //div nav
     var $navButtons = $('<div>');
     $navButtons.addClass('nav-buttons');
     $('main').after($navButtons);
 
-    //boutton 9 cartes
+    //boutton easy
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
@@ -139,7 +129,7 @@ var app = {
     $('.nav-buttons').append($buttonDiv);
 
 
-    //boutton 18 cartes
+    //boutton medium
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
@@ -150,7 +140,7 @@ var app = {
     $button.val('9');
     $('.nav-buttons').append($buttonDiv);
 
-    //boutton 36
+    //boutton hard
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
@@ -162,7 +152,6 @@ var app = {
     $('.nav-buttons').append($buttonDiv);
 
     //reset
-    //boutton 38
     var $buttonDiv = $('<div>');
     $button = $('<button>');
     $($buttonDiv).append($button);
@@ -177,10 +166,10 @@ var app = {
   // Génération des cartes
   cardsGenerators: function(){
     // appelle de création des x div
-    var $i = 0;
+    let $i = 0;
     //on définit la position du background de .image avt la boucle
-    var $positionX = 100;
-    var $positionY = 0;
+    let $positionX = 100;
+    let $positionY = 0;
 
     // boucle de création de toutes les cartes
     while ($i < 36) {
@@ -215,12 +204,9 @@ var app = {
     }
   },//**fin cardsGenerators
 
-  // Ajout des div au plateau selon le nbre voulu selectionné
+  // Ajout ou enlève des div au plateau selon le nbre voulu selectionné
   addCardsToBoard:function(cardsNbr){
-    // Get saved data from sessionStorage
-    //var cNbr = sessionStorage.getItem(app.cardsOnBoard);
-    //console.log('cNbr '+cNbr);
-    // mise ou remise à zéro du nombre de card sur le plateau
+
     //on vide toutes les div déjà crées
      $( ".board-game" ).empty();
      // on vide le tableau déjà créer
@@ -228,13 +214,7 @@ var app = {
      //on génère les cates
      app.cardsGenerators();
 
-    /******************/
-    // 6 = 12 cartes //
-    // 14 = 28 cartes//
-    // 18 = 36 cartes//
-    /****************/
     // on récupre le nbre de carte demandée
-    //let $howManyCards = sessionStorage.getItem(app.cardsOnBoard);
     let $howManyCards = cardsNbr;
     let i = 0;
     // on créer 2 tableau pour accueilir le nom des cartes
@@ -252,7 +232,7 @@ var app = {
     // on attache les deux tab de div au plateau
     $('.board-game').append($cardTab1);
     $('.board-game').append($cardTab2);
-    //app.game();
+
   }, // addCardsToboard
 
   // Mélange de la positions des cartes
@@ -330,7 +310,7 @@ var app = {
     $('.card').css("pointerEvents", "");
   },
 
-  //si deux cartes sont identiques et WIN fonction
+  //si deux cartes sont identiques et WIN process
   matchedCard: function(){
 
     // on récupère et affecte les valeurs du data et de la div cliquée
@@ -382,22 +362,16 @@ var app = {
 
   },//fin matched cards
 
-  // reset
+  // reset le board après un win ou un lose
   resetBoard: function () {
     app.clickedCard1 = null;
     app.clickedCard2 = null;
     app.clickedDiv1 = null;
     app.clickedDiv2 = null;
-    //$( ".board-game" ).empty();
     location.reload();
   },
 
-//Score board
-scoreBoard: function (){
-  $('#scoreTotal').text(app.gamesWin + app.gamesLose);
-  $('#scoreWin').text(app.gamesWin);
-  $('#scoreLose').text(app.gamesLose);
-},
+
 
 };//**********fin app
 
