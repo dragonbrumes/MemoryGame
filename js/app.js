@@ -16,16 +16,16 @@ var app = {
   gameslocalWin: null,
   gameslocalLose: null,
 
-  init: function(){
+  init: function() {
     console.log('init');
 
-    //on appelle la création du menu
+    // appel la création du menu
     app.menuGen();
 
     // tableau des scoreWin
     app.scoreBoard();
 
-    //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
+    //appel de la méthode d'ajout des cards au plateau avec une valeur par défault
     //pour lancer le jeu avec un minimun de carte (contient la fonction de création des cartes)
     app.addCardsToBoard(app.cardsOnBoard);
 
@@ -33,27 +33,27 @@ var app = {
     //à app.cardsOnBoard
     $('.button').on('click', app.difficultyLevel);
 
-    //appelle de la fonction de RETOURNEMENT au clic;
+    //appel de la fonction de RETOURNEMENT au clic;
     //mais n'ecoute pas directement .card, sinon au changement de DOM pour le nbre de carte,
-    //le listener ne fonctionne plus. On écoute donc à partir de leurs parent, .board-game
+    //le listener ne fonctionne plus. On écoute donc à partir de leur parent, .board-game
     $('.board-game').on('click', '.card', app.game);
 
-    //appelle de la fonction RESET;
+    //appel de la fonction RESET pour recharger la page;
     $('.reset').on('click', app.resetBoard);
 
 
-  }, // *******************************************************fin init
+  }, // *************************************************fin init
 
   /************** GENERATORS ***********************************/
 
   // règle le niveau de difficulté au niveau des boutons
-  difficultyLevel: function(){
+  difficultyLevel: function() {
     // on met à jour le nbre de carte par défault
     app.cardsOnBoard = Number($(this).val());
     //on envoi à la fonction le nbre de carte qu'on veut attacher au plateau
     app.addCardsToBoard($(this).val());
     //on règle le timer sur un valeur diff selon le nombre de cartes
-    if (app.cardsOnBoard === 18){
+    if (app.cardsOnBoard === 18) {
       app.secondTimer = 90;
     } else {
       app.secondTimer = 60;
@@ -61,7 +61,7 @@ var app = {
   }, // end of difficultyLevel
 
   //Score board
-  scoreBoard: function (){
+  scoreBoard: function() {
     //on affiche les scores dans les td respectives. Issues du localStorage.
     $('#scoreTotal').text(app.gamesWin + app.gamesLose);
     $('#scoreWin').text(app.gamesWin);
@@ -79,12 +79,13 @@ var app = {
       let $s = 100;
       // La barre de width:%($s) décrémente plus vite que la barre de temps $a (attr aria)
       // il faut faire correspondre la vitesse de décrémentation avec ($s/$a)
-      let $d = (100/$a);
+      let $d = (100 / $a);
       // on lance le compteur
       let $oneSecond = setInterval(step, 1000);
+
       function step() {
+        // si le compteur arrive à zero la partie s'arrête
         if ($a === 0) {
-          // si le compteur arrive à zero
           // stockage en local de la partie perdue
           app.gamesLose = Number(localStorage.getItem('gameslocalLose'));
           app.gamesLose += 1;
@@ -94,23 +95,25 @@ var app = {
           app.resetBoard();
         } else {
           // pour faire correspondre la barre de % (s) et le temps en s(a), la barre % descend plus vite
-          $s-=$d;
+          $s -= $d;
           // toutes les secondes, on retir une seconde
-          $a-=1;
+          $a -= 1;
           // on update toutes le second le style html de la barre
-          $('.progress-bar').css("width", " "+$s+"% ");
-          $('.progress-bar').attr("aria-valuenow", " "+$a+" ");
-          $('.progress-bar').text($a+'s');
-          if ($a === 30) {$('.progress-bar').text(' HURRY UP!');}
+          $('.progress-bar').css("width", " " + $s + "% ");
+          $('.progress-bar').attr("aria-valuenow", " " + $a + " ");
+          $('.progress-bar').text($a + 's');
+          if ($a === 30) {
+            $('.progress-bar').text(' HURRY UP!');
+          }
         }
       } //step
     } // if
     //on affecte un valeur pour ne pas relancer le timer après un 1er clic
     return app.startTimer = 'on';
-  },// progressTime
+  }, // progressTime
 
   // création du menu
-  menuGen: function(){
+  menuGen: function() {
 
     //div nav
     var $navButtons = $('<div>');
@@ -127,7 +130,6 @@ var app = {
     $button.text('12 cartes');
     $button.val('6');
     $('.nav-buttons').append($buttonDiv);
-
 
     //boutton medium
     var $buttonDiv = $('<div>');
@@ -164,8 +166,8 @@ var app = {
   },
 
   // Génération des cartes
-  cardsGenerators: function(){
-    // appelle de création des x div
+  cardsGenerators: function() {
+    // appel de création des x div
     let $i = 0;
     //on définit la position du background de .image avt la boucle
     let $positionX = 100;
@@ -188,12 +190,12 @@ var app = {
       $imageDiv.addClass('image');
       $imageDiv.css({
         backgroundImage: 'url(../images/cards.png)',
-        backgroundPosition: ' 100px '+$positionY+'px',
+        backgroundPosition: ' 100px ' + $positionY + 'px',
       });
       //compteur du while
       $i++;
       //on décrémente la position du background pour matcher avec l'odre descendant du sprit
-      //la 1ere position est donc 0 avant la décrémentation
+      //la 1ere position est donc 0 avant la décrémentation de la taille de l'image
       $positionY -= 100;
       //ajout des .cache et .image au .card
       $cardDiv.append($cacheDiv);
@@ -202,102 +204,106 @@ var app = {
       //On range les div dans la property tableau app.card
       app.cards.push($cardDiv);
     }
-  },//**fin cardsGenerators
+  }, //**fin cardsGenerators
 
   // Ajout ou enlève des div au plateau selon le nbre voulu selectionné
-  addCardsToBoard:function(cardsNbr){
+  addCardsToBoard: function(cardsNbr) {
 
     //on vide toutes les div déjà crées
-     $( ".board-game" ).empty();
-     // on vide le tableau déjà créer
-     app.cards = [];
-     //on génère les cates
-     app.cardsGenerators();
+    $(".board-game").empty();
+    // on vide le tableau des cartes déjà crée
+    app.cards = [];
+    //on génère les cartes
+    app.cardsGenerators();
 
     // on récupre le nbre de carte demandée
     let $howManyCards = cardsNbr;
     let i = 0;
-    // on créer 2 tableau pour accueilir le nom des cartes
+    // on créer 2 tableaux vide pour accueilir les infos des cartes
     var $cardTab1 = [];
     var $cardTab2 = [];
-    // selection des data-id dans 2 tableaux avec un décalage de 18 pour avoir deux fois les memes id
+    // selection des cartes dans 2 tableaux avec un décalage de 18 pour avoir deux fois les memes id
     for (i; i < $howManyCards; i++) {
-       $cardTab1[i] = app.cards[i];
-       $cardTab2[i] = app.cards[(i+18)];
+      $cardTab1[i] = app.cards[i];
+      $cardTab2[i] = app.cards[(i + 18)];
     }
-    //on mélange les positions des cartes dans les 2 tableaux
+    //on mélange les cartes et leures positions des cartes dans les 2 tableaux
     app.shuffleCards($cardTab1);
     app.shuffleCards($cardTab2);
 
-    // on attache les deux tab de div au plateau
+    // on attache les deux tableaux de div au plateau
     $('.board-game').append($cardTab1);
     $('.board-game').append($cardTab2);
 
   }, // addCardsToboard
 
-  // Mélange de la positions des cartes
+  // Mélange des cartes et leures positions
   shuffleCards: function(a) {
     for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-  },//fin shuffle
+  }, //fin shuffle
 
   /************************ GAME LOGIC *************************/
-  game: function(event){
-    // au 1er clic on lance la progressBar et lui dit en parametre
+  game: function(event) {
+    // au 1er clic on lance la progressBar et on l'indique en parametre
     app.progressTimer('start');
 
     //si le 1er clic est vide
     if (!app.clickedDiv1) {
-      //on range le nom de la div et la div cliquée dans une var
+      //on stocke le nom data-idCard de la div et la div cliquée dans une var
       app.clickedId1 = $(this).data('idCard');
       app.clickedDiv1 = $(this);
-      //on affiche la div image avec l'image
+      //on affiche la div image avec l'image et on cache la div .cache
       app.clickedDiv1.children().hide('cache');
       app.clickedDiv1.children().next().show('image');
-      //console.log('clickedId1: ' +app.clickedId1);
 
-      //si au 2eme clic les id images ne correspondent pas
+      // on prévient le double clic sur la carte retournée
+      // pour éviter d'envoyer deux fois l'idCard et marquer la carte avec un checked
+      app.clickedDiv1.css("pointerEvents", "none");
+
+      //si au 2eme clic les id images ne correspondent pas au 1er clic
     } else if ($(this).data('idCard') !== app.clickedId1) {
-       //app.clickedId2 = $(this).attr('class').slice(0,-1);
-       app.clickedId2 = $(this).data('idCard');
-       app.clickedDiv2 = $(this);
-       //console.log('ko '+app.clickedId2);
-       //on renvoi vers la méthode de non correspondance
-       app.unmatchedCard();
 
-      /****** if it's a match! ******/
-    } else if ($(this).data('idCard') === app.clickedId1){
       app.clickedId2 = $(this).data('idCard');
       app.clickedDiv2 = $(this);
-      //console.log('ok '+app.clickedId2);
+
+      //on renvoi vers la méthode de non correspondance
+      app.unmatchedCard();
+
+      /****** if it's a match! ******/
+    } else if ($(this).data('idCard') === app.clickedId1) {
+
+      app.clickedId2 = $(this).data('idCard');
+      app.clickedDiv2 = $(this);
+
       //on renvoi vers la méthode de correspondance si 2 cartes sont identiques
       app.matchedCard();
-     }
+    }
   }, // fin function returnCard
 
   //si les cartes ne sont pas identiques
-  unmatchedCard: function(){
+  unmatchedCard: function() {
 
-   //on cache le cache et on montre l'image
-   app.clickedDiv2.children().hide('cache');
-   app.clickedDiv2.children().next().show('image');
+    //on cache le cache et on montre l'image
+    app.clickedDiv2.children().hide('cache');
+    app.clickedDiv2.children().next().show('image');
 
-   //on empeche le clic sur toutes les cards
-   $('.card').css("pointerEvents", "none");
+    //on empeche le clic sur toutes les cards
+    $('.card').css("pointerEvents", "none");
 
-   //on permet à nouveau le clic après 1sec
-   window.setTimeout(app.noClickOff, 1000);
+    //on permet à nouveau le clic après 1sec
+    window.setTimeout(app.noClickOff, 1000);
 
-   //on retourne les image non correspondentes
-   app.clickedDiv1.children(":first").delay( 1100 ).fadeIn(140, "linear" );
-   app.clickedDiv1.children(":nth-child(2)").delay( 900 ).fadeOut(300, "linear" );
-   app.clickedDiv2.children(":first").delay( 1100 ).fadeIn(120, "linear" );
-   app.clickedDiv2.children(":nth-child(2)").delay( 900 ).fadeOut(250, "linear" );
+    //on retourne les image non correspondentes
+    app.clickedDiv1.children(":first").delay(1100).fadeIn(140, "linear");
+    app.clickedDiv1.children(":nth-child(2)").delay(900).fadeOut(300, "linear");
+    app.clickedDiv2.children(":first").delay(1100).fadeIn(120, "linear");
+    app.clickedDiv2.children(":nth-child(2)").delay(900).fadeOut(250, "linear");
 
-   //remise à 0 des valeurs clickedCard et clickedDiv
+    //remise à 0 des valeurs clickedCard et clickedDiv
     app.clickedCard1 = null;
     app.clickedCard2 = null;
     app.clickedDiv1 = null;
@@ -305,65 +311,53 @@ var app = {
   },
 
   // rétablissment de l'écoute sur les clics
-  noClickOff: function(){
+  noClickOff: function() {
     //on rétablit les clics
     $('.card').css("pointerEvents", "");
   },
 
   //si deux cartes sont identiques et WIN process
-  matchedCard: function(){
+  matchedCard: function() {
 
     // on récupère et affecte les valeurs du data et de la div cliquée
     app.clickedDiv2.children().hide('cache');
     app.clickedDiv2.children().next().show('image');
     app.clickedDiv1.addClass('checked');
     app.clickedDiv2.addClass('checked');
-    //console.log(app.cardsOnBoard);
+
     // on compte le nombre de carte à checked (trouvés).
     let $checked = Number($('.checked').length);
 
     // si le nbre de carte checked est égal au nbre de carte sur le plateau, c'est gagné
-    if ($checked === (app.cardsOnBoard*2)) {
-      // stop timer
-      // let a =  0;
-      // app.progressTimer(a);
-      //
-      // $('#win-message').dialog({
-      //   modal:true,
-      //   buttons: {
-      //     Ok: function(){ $(this).dialog('close');
-      //       app.resetBoard();
-      //     }
-      //   }
-      // })
+    if ($checked === (app.cardsOnBoard * 2)) {
 
       // stockage en local de la partie gagnée
-        // récupération du local
-        let $addWin = Number(localStorage.getItem('gameslocalWin'));
-        //j'ajoute 1
-        $addWin +=1;
-        //je renvoi au local
-        app.gameslocalWin = Number(localStorage.setItem('gameslocalWin', $addWin));
-      //je set la valeur win
-        app.gamesWin = app.gameslocalWin;
+      // récupération du local
+      let $addWin = Number(localStorage.getItem('gameslocalWin'));
+      //j'ajoute 1
+      $addWin += 1;
+      // on renvoi au local
+      app.gameslocalWin = Number(localStorage.setItem('gameslocalWin', $addWin));
+      // on set la valeur win
+      app.gamesWin = app.gameslocalWin;
 
-
+      // message de victoire
       setTimeout(function() {
         alert('YOU ARE AWESOME. YOU WIN!');
         app.resetBoard();
       }, 1000);
     }
-    //console.log('YEAH!');
+
     //on remet les valeurs à zéro
     app.clickedCard1 = null;
     app.clickedCard2 = null;
     app.clickedDiv1 = null;
     app.clickedDiv2 = null;
 
-  },//fin matched cards
+  }, //fin matched cards
 
   // reset le board après un win ou un lose
-  resetBoard: function () {
+  resetBoard: function() {
     app.clickedCard1 = null;
     app.clickedCard2 = null;
     app.clickedDiv1 = null;
@@ -371,9 +365,7 @@ var app = {
     location.reload();
   },
 
+}; //**********fin app
 
-
-};//**********fin app
-
-// quand le DOM est chargé, on appelle la méthode app.init();
+// quand le DOM est chargé, appel la méthode app.init();
 $(app.init);
