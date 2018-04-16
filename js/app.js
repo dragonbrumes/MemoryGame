@@ -245,9 +245,9 @@ var app = {
        $cardTab1[i] = app.cards[i];
        $cardTab2[i] = app.cards[(i+18)];
     }
-    //on mélange les positions des cartes dans les 2 tableaux///////////////////////////////////////////////
-    //app.shuffleCards($cardTab1);
-    //app.shuffleCards($cardTab2);
+    //on mélange les positions des cartes dans les 2 tableaux
+    app.shuffleCards($cardTab1);
+    app.shuffleCards($cardTab2);
 
     // on attache les deux tab de div au plateau
     $('.board-game').append($cardTab1);
