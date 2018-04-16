@@ -63,3 +63,6 @@ main {
     background-color: #01c3a8;
     color: red;
 }
+#win-message {
+  display: none;
+}

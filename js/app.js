@@ -8,6 +8,7 @@ var app = {
   clickedCard2: null,
   clickedDiv2: null,
   startTimer: null,
+  secondTimer: 60, //le temps du compte à rebours
 
   init: function(){
     //console.log('init');
@@ -23,21 +24,13 @@ var app = {
     //on appelle la création du menu
     app.menuGen();
 
-    //création des cartes à jouer
-    //app.cardsGenerators();
-
     //appelle de la méthode d'ajout des cards au plateau avec une valeur par défault
-    //pour lancer le jeu avec un minimun de carte
+    //pour lancer le jeu avec un minimun de carte (contient la fonction de création des cartes)
     app.addCardsToBoard(app.cardsOnBoard);
 
     //ecoute les boutons de choix du nbre de cartes et on affecte cette nelle valeurs
     //à app.cardsOnBoard
-    $('.button').on('click', function (){
-      // on met à jour le nbre de carte par défault
-      app.cardsOnBoard = $(this).val();
-      //on envoi à la fonction le nbre de carte qu'on veut attacher au plateau
-      app.addCardsToBoard($(this).val());
-    });
+    $('.button').on('click', app.difficultyLevel);
 
     //appelle de la fonction de RETOURNEMENT au clic;
     //mais n'ecoute pas directement .card, sinon au changement de DOM pour le nbre de carte,
@@ -52,15 +45,33 @@ var app = {
 
   /************** GENERATORS ***********************************/
 
+  // règle le niveau de difficulté au niveau des boutons
+  difficultyLevel: function(){
+    // on met à jour le nbre de carte par défault
+    app.cardsOnBoard = Number($(this).val());
+    //on envoi à la fonction le nbre de carte qu'on veut attacher au plateau
+    app.addCardsToBoard($(this).val());
+    //on règle le timer sur un valeur diff selon le nombre de cartes
+    if (app.cardsOnBoard === 18){
+      app.secondTimer = 90;
+    } else {
+      app.secondTimer = 60;
+    }
+  }, // end of difficultyLevel
+
   // ProgressBar
   progressTimer: function() {
 
-    // si app.startTimer est null c'est qu'il n'a pas été déjà lancer. On peut le lancer
+    // si app.startTimer est null c'est qu'il n'a pas été déjà lancé. On peut le lancer
     if (app.startTimer == null) {
-      // valeur en second
-      let $a = 60;
+      // valeur en second indiqué par les boutons de difficulté
+      let $a = app.secondTimer;
       // valeur de la barre de progression
       let $s = 100;
+      // La barre de width:%($s) décrémente plus vite que la barre de temps $a (attr aria)
+      // il faut faire correspondre la vitesse de décrémentation avec ($s/$a)
+      let $d = (100/$a);
+
       let $oneSecond = setInterval(step, 1000);
       function step() {
         if ($a === 0) {
@@ -70,7 +81,8 @@ var app = {
           app.resetBoard();
         } else {
           // pour faire correspondre la barre de % (s) et le temps en s(a), la barre % descend plus vite
-          $s-=1.66;
+          $s-=$d;
+          // toutes les secondes, on retir une seconde
           $a-=1;
           // on update toutes le second le style html de la barre
           $('.progress-bar').css("width", " "+$s+"% ");
@@ -112,9 +124,9 @@ var app = {
     $($buttonDiv).append($button);
     $button.addClass('btn btn-warning');
     $button.addClass('button');
-    $button.addClass('14');
-    $button.text('28 cartes');
-    $button.val('14');
+    $button.addClass('9');
+    $button.text('18 cartes');
+    $button.val('9');
     $('.nav-buttons').append($buttonDiv);
 
     //boutton 36
@@ -300,7 +312,7 @@ var app = {
   //si deux cartes sont identiques
   matchedCard: function(){
 
-    // on récupère et affecte les valeurs du data et de la div cliqué
+    // on récupère et affecte les valeurs du data et de la div cliquée
     app.clickedDiv2.children().hide('cache');
     app.clickedDiv2.children().next().show('image');
     app.clickedDiv1.addClass('checked');
@@ -308,12 +320,26 @@ var app = {
     //console.log(app.cardsOnBoard);
     // on compte le nombre de carte à checked (trouvés).
     let $checked = Number($('.checked').length);
+
     // si le nbre de carte checked est égal au nbre de carte sur le plateau, c'est gagné
     if ($checked === (app.cardsOnBoard*2)) {
-      app.clickedDiv2.children().hide('cache');
-      app.clickedDiv2.children().next().show('image');
-      alert('YOU ARE AWESOME. YOU WIN!');
-      app.resetBoard();
+      // stop timer
+      // let a =  0;
+      // app.progressTimer(a);
+      //
+      // $('#win-message').dialog({
+      //   modal:true,
+      //   buttons: {
+      //     Ok: function(){ $(this).dialog('close');
+      //       app.resetBoard();
+      //     }
+      //   }
+      // })
+
+      setTimeout(function() {
+        alert('YOU ARE AWESOME. YOU WIN!');
+        app.resetBoard();
+      }, 1000);
     }
     //console.log('YEAH!');
     //on remet les valeurs à zéro
